@@ -1,9 +1,9 @@
 import pygame
 import random
 import time
-from menu import Menu  # Импортируем класс Menu из отдельного файла
+from menu import Menu  # Importing the Menu class from a separate file
 
-# Размеры окна
+# Window dimensions
 WIDTH, HEIGHT = 800, 600
 BG_COLOR = (255, 255, 255)
 TEXT_COLOR = (0, 0, 0)
@@ -23,9 +23,9 @@ class TypingGame:
         self.mistakes = []
 
         self.last_update_time = 0
-        self.update_interval = 1  # Обновление раз в секунду
+        self.update_interval = 1  # Update once per second
 
-        # Меню
+        # Menu
         self.menu = True
         self.result_text = ""
         self.menu_info = ""
@@ -118,25 +118,16 @@ class TypingGame:
                             self.menu_info = ""
                     elif event.key == pygame.K_BACKSPACE:
                         self.typing_input = self.typing_input[:-1]
-                    elif event.key == pygame.K_RETURN:
-                        if self.typing_input == self.target_sentence:
-                            typing_end_time = time.time()
-                            typing_time = typing_end_time - self.typing_start_time
-                            self.calculate_speed()
-                            self.result_text = f"Набор завершен! Скорость: {self.score} зн/мин"
-                            self.menu_info = "Нажмите Enter, чтобы начать новую тренировку."
-                            self.menu = True
-                        else:
-                            self.result_text = "Ошибка! Попробуйте снова."
                     else:
                         self.typing_input += event.unicode
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.menu:
-                        mouse_x, mouse_y = pygame.mouse.get_pos()
-                        if self.start_button.collidepoint(mouse_x, mouse_y):
-                            self.menu = False
-                            self.new_sentence()
-                            self.menu_info = ""
+            # Checking if the typing input matches the target sentence
+            if not self.menu and self.typing_input == self.target_sentence:
+                typing_end_time = time.time()
+                typing_time = typing_end_time - self.typing_start_time
+                self.calculate_speed()
+                self.result_text = f"Набор завершен! Скорость: {self.score} зн/мин"
+                self.menu_info = "Нажмите Enter, чтобы начать новую тренировку."
+                self.menu = True
 
             self.screen.fill(BG_COLOR)
 
@@ -150,7 +141,7 @@ class TypingGame:
             pygame.display.flip()
             clock.tick(60)
 
-            # Обновление зн/мин раз в секунду
+            # Update speed once per second
             if time.time() - self.last_update_time >= self.update_interval:
                 self.calculate_speed()
                 self.last_update_time = time.time()
